@@ -387,7 +387,7 @@ Prediction markets that the source lists with probabilities instead of odds (Pol
 | Column | Meaning |
 |---|---|
 | `Match_ID / Side / Stat` | Match, team side and statistic (Attacks, Dangerous_Attacks, Possession_Pct, Shots_On_Target, Corners, Goals...). |
-| `Minute / Value` | Match minute and the running value at that minute: cumulative count, or running percentage for Possession_Pct, Passing_Accuracy and Crossing_Accuracy. |
+| `Minute / Value` | Match minute and the running value at that minute: cumulative count, or running percentage for Possession_Pct, Passing_Accuracy and Crossing_Accuracy. Negative on 2,139 rows of 25 matches played the night the clocks went back in Europe: see *Said plainly - known limitations*. |
 | `Timestamp_UTC / Epoch` | Time the value was recorded. Empty on the matches played before 2021-05-11: the source gives no time for them. |
 
 ## Rules applied to every cell
@@ -417,7 +417,7 @@ Prediction markets that the source lists with probabilities instead of odds (Pol
   of these leagues go straight to penalties after 90 minutes, and extra time may also have been played without a goal
   or an event the source dates beyond the 105th minute.
 - **Neutral_Venue** compares the stadium's country with the home team's country code from the source: 1 = neutral
-  (38 matches), 0 = home ground country (29,619), empty = unknown (1,342).
+  (38 matches), 0 = home ground country (29,618), empty = unknown (1,343).
   CF Montreal, Toronto FC and Vancouver Whitecaps (Canadian clubs) were the home team in a US stadium on 38 matches: `Neutral_Venue` = 1 (7 in the MLS is Back tournament, 31 in 2020 and 2021 while the border was closed during Covid-19). The MLS is Back tournament (51 matches, July-August 2020) was played in Orlando: a US club's 'home' match there counts as 0, because the rule compares countries, not grounds. A neutral ground inside the home team's own country (finals played at a neutral ground) counts as 0.
 
 ## Pre-match, in-play and closing
@@ -537,16 +537,82 @@ Each decision below is written in the build code with its evidence; the build st
 
 **Half-time scores.** 1 half-time score was higher than the final score (the source counted a goal it later cancelled): left empty rather than wrong.
 
+**Home / away orientation.** A bookmaker sometimes lists a fixture with the two teams the other way round. Every price series is aligned on the match's home and away teams: 1X2 and Asian handicap, full time and half time, with the handicap line and the live score turned with it (28 match-bookmaker series turned: Bet365 15, Unibet 7, Pinnacle 4, Betfair 1, Betsson 1); the other bookmakers' snapshots likewise (223 match-bookmaker sets). 15 matches were listed by the source with home and away reversed: 12 because almost all bookmakers show the other team at home (each checked against the clubs' usual grounds and the home / away balance of the pair in the season), 3 because the home / away balance of the pair in the season was broken and the published round-by-round results of the season show the other team at home. These matches are turned around everywhere (teams, goals, lineups, statistics, events, prices); turning a match leaves its venue as it was (wrong venues are corrected or removed below):
+
+| Source event | League | Date | Home | Away | Found by |
+|---|---|---|---|---|---|
+| 4398140 | BOL | 2021-12-04 | Atletico Palmaflor Vinto | Club Aurora | bookmakers |
+| 6970024 | BOL | 2023-08-19 | Real Santa Cruz | Oriente Petrolero | bookmakers |
+| 8733586 | BOL | 2024-11-01 | San Antonio Bulo Bulo | Jorge Wilstermann | bookmakers |
+| 10149831 | BOL | 2025-07-21 | Blooming | Guabira | bookmakers |
+| 5195007 | COL | 2022-07-24 | America de Cali | Internacional FC de Palmira | bookmakers |
+| 632724 | ECU | 2018-03-06 | Guayaquil City | Emelec | season results |
+| 631329 | ECU | 2018-04-17 | Guayaquil City | Barcelona Guayaquil | season results |
+| 885807 | VEN | 2018-09-02 | Carabobo | CD Lara | season results |
+| 1723775 | VEN | 2019-08-31 | Carabobo | Llaneros De Guanare | bookmakers |
+| 2158792 | VEN | 2020-02-08 | Gran Valencia | Yaracuyanos | bookmakers |
+| 2849432 | VEN | 2020-11-23 | Monagas | Zamora | bookmakers |
+| 3905457 | VEN | 2021-08-13 | Monagas | Metropolitanos FC | bookmakers |
+| 7111812 | VEN | 2023-08-28 | Monagas | UCV | bookmakers |
+| 6246779 | VEN | 2023-10-06 | Monagas | Deportivo La Guaira | bookmakers |
+| 8826078 | VEN | 2024-09-22 | Portuguesa | UCV | bookmakers |
+
+**1 venue was removed.** The source listed this match the wrong way round and gave the other club's ground as the venue; the real venue is not proven, so Stadium is left empty rather than wrong:
+
+| Source event | League | Date | Home | Away | Venue in the source |
+|---|---|---|---|---|---|
+| 5195007 | COL | 2022-07-24 | America de Cali | Internacional FC de Palmira | Estadio Doce De Octubre, Tulua |
+
+**34 fixtures are not in the tables** because the source never marked them as finished (25 result decided by the federation; 3 interrupted; 3 result never confirmed by the source; 2 abandoned; 1 removed by the source). They are listed so that a gap in a season is never silent:
+
+| Source event | League | Date | Home | Away | Score shown | Status |
+|---|---|---|---|---|---|---|
+| 9305085 | ARG | 2025-02-04 | Godoy Cruz | CA Talleres de Córdoba | 0-0 | interrupted |
+| 10543158 | ARG | 2025-08-30 | Sarmiento | Rosario Central | - | interrupted |
+| 3490721 | BOL | 2021-05-08 | The Strongest | Royal Pari FC | 3-0 | result decided by the federation |
+| 7437917 | BOL | 2023-11-06 | Nacional Potosi | Atletico Palmaflor |  | result never confirmed by the source |
+| 11902050 | BOL | 2026-06-04 | Real Potosi | Academia de Balompie Boliviano |  | removed by the source |
+| 5726709 | CHI | 2022-10-15 | CD Antofagasta | Palestino | 0-3 | result decided by the federation |
+| 11257960 | CHI | 2026-02-09 | Union La Calera | Cobresal | 0-3 | result decided by the federation |
+| 11257830 | CHI | 2026-08-31 | Coquimbo Unido | Huachipato | - | abandoned |
+| 13143155 | CHI | 2026-09-16 | Coquimbo Unido | Huachipato |  | result never confirmed by the source |
+| 2802994 | COL | 2020-10-06 | Once Caldas | Deportivo Pereira | 0-3 | result decided by the federation |
+| 2920935 | COL | 2020-11-13 | Cucuta Deportivo | America de Cali | 0-3 | result decided by the federation |
+| 4533382 | COL | 2022-02-15 | Union Magdalena | Atletico Bucaramanga | 0-3 | result decided by the federation |
+| 4533486 | COL | 2022-05-08 | Jaguares de Cordoba | Independiente Medellin | 3-0 | result decided by the federation |
+| 5194076 | COL | 2022-09-21 | Internacional FC de Palmira | Deportivo Cali | 2-0 | result decided by the federation |
+| 7504993 | COL | 2023-12-03 | Deportivo Cali | Junior | 0-2 | result decided by the federation |
+| 7504996 | COL | 2023-12-03 | Atletico Nacional Medellin | Independiente Medellin | 0-5 | result decided by the federation |
+| 7658929 | COL | 2024-03-11 | Patriotas FC | Deportivo Pereira | 0-2 | result decided by the federation |
+| 8840272 | COL | 2024-09-27 | Atletico Nacional Medellin | Junior | 0-3 | result decided by the federation |
+| 9397443 | COL | 2025-05-04 | Union Magdalena | Once Caldas | 0-3 | result decided by the federation |
+| 10757598 | COL | 2025-10-21 | Independiente Medellin | Independiente Santa Fe | 1-1 | result decided by the federation |
+| 2633615 | ECU | 2020-09-20 | Guayaquil City | El Nacional |  | result decided by the federation |
+| 2633622 | ECU | 2020-10-02 | Deportivo Cuenca | Olmedo | 0-3 | result decided by the federation |
+| 2960529 | ECU | 2020-11-29 | El Nacional | Guayaquil City | 0-3 | result decided by the federation |
+| 3247984 | ECU | 2021-02-19 | Universidad Catolica del Ecuador | Olmedo | 3-0 | result decided by the federation |
+| 3248072 | ECU | 2021-04-12 | Barcelona Guayaquil | SD Aucas | 3-0 | result decided by the federation |
+| 4647788 | ECU | 2022-02-20 | Guayaquil City | Deportivo Cuenca | 3-0 | result decided by the federation |
+| 3078452 | MEX | 2021-02-21 | Atlas | Club America | 3-0 | result decided by the federation |
+| 4447820 | MEX | 2022-03-05 | Queretaro | Atlas | 0-3 | result decided by the federation |
+| 1002633 | USA | 2018-11-04 | New York City FC | Atlanta United |  | result never confirmed by the source |
+| 6062025 | USA | 2023-05-07 | FC Dallas | St. Louis City SC | 0-0 | interrupted |
+| 6062110 | USA | 2023-07-05 | Colorado Rapids | Portland Timbers | 0-0 | abandoned |
+| 6236161 | VEN | 2023-04-21 | Deportivo Rayo Zuliano | Zamora | 1-1 | result decided by the federation |
+| 8986898 | VEN | 2024-11-12 | Caracas | Deportivo Tachira | 0-4 | result decided by the federation |
+| 12331530 | VEN | 2026-07-31 | Academia Anzoategui FC | Deportivo Tachira | 0-3 | result decided by the federation |
+
 ## Said plainly - known limitations
 
 - **Betfair and Betsson** were not collected for Argentina 2016/17 to 2019/20 (1,422 matches) and USA 2020 MLS is Back (51 matches): `Betfair_Pct` and `Betsson_Pct` are empty in the Coverage file for a season with none of its matches collected.
 - **Lineups** are absent or almost absent from the source for 2 leagues: Bolivia, Venezuela. The odds, the match sheet, the events and the statistics are there; see `Lineups_Pct` in the Coverage file, season by season.
 - **Matches missing from the source** (stages or matches never collected): Bolivia 2024: play-off Royal Pari - Real Oruro: first leg only (2024-12-21); the second leg is missing from the source; Colombia 2017 Apertura: knockout phase incomplete in the source (3 quarter-final first legs and the final's second leg); Colombia 2017 Finalizacion: second legs only for the quarter-finals; their first legs are missing from the source; Colombia 2018 Apertura: knockout phase (quarter-finals, semi-finals, final) missing from the source; Colombia 2018 Finalizacion: knockout phase (quarter-finals, semi-finals, final) missing from the source; Ecuador 2018: final between the stage winners missing from the source; Mexico 2018/19 Apertura: second legs only for the semi-finals; their first legs (2018-12-06) are missing from the source; Venezuela 2016: season final Zamora - Zulia (winners of the Apertura and the Clausura): first leg only (2016-12-04); the second leg in Maracaibo is missing from the source; Venezuela 2017 Clausura: 8 regular-season matches missing from the source; Venezuela 2021: final of 2021-12-11 missing from the source.
-- **Venue unknown** for 1,342 matches (4.3 %); `Neutral_Venue` is empty on 1,342 matches.
+- **Venue unknown** for 1,343 matches (4.3 %); `Neutral_Venue` is empty on 1,343 matches.
 - **Round** is filled on 25,394 matches (81.9 %): it stays empty where the source's matchday numbers are not reliable for that season and stage, and in knockout stages.
 - **Kickoff times**: for 7 matches the source's scheduled kickoff is more than 3 hours later than the real start read from Bet365's live clock, for example: CA Tigre - CA Aldosivi, played 2025-09-20 (source kickoff 2025-09-21 15:00 UTC); Platense - Defensa y Justicia, played 2025-03-03 (source kickoff 2025-03-04 23:00 UTC); Banfield - CA Independiente, played 2025-03-03 (source kickoff 2025-03-04 22:30 UTC). `Kickoff_UTC` keeps the source's value; the pre-match markets are cut at the real start.
 - **Score and clock on in-play quotes** are the bookmaker's own: Pinnacle almost never sends a numeric clock (`Minute` empty) and Betfair often sends a partial score (`Score_Home` / `Score_Away` empty). Nothing is filled in from another bookmaker.
 - **Minute-by-minute statistics carry no recording time before 2021-05-11**: `Timestamp_UTC` and `Epoch` are empty on the 5,535 matches played before (2,102,874 rows, 25.2 %); `Minute` and `Value` are always there.
+- **Minute clock on the night the clocks go back in Europe**: in 25 matches played that night (last weekend of October, 2019 to 2025), the source's minute clock ran one hour behind for part of the match. On those stretches `Minute` is 60 below the real match minute, which shows as 2,139 rows with a negative `Minute` (ARG 247, BRA 610, CHI 32, COL 86, ECU 96, MEX 597, USA 423, VEN 48). The rows are kept as the source recorded them. `Timestamp_UTC` and `Epoch` are not shifted (given from 2021-05-11): they place each row in the match.
 - **Score field of the source**: on 59 of the 116 penalty shoot-outs the source's own final score adds the shoot-out to the goals. This product never uses it: goals after 90 minutes, after extra time and in the shoot-out are separate columns.
 - **Coverage changes over time** (table *Coverage over time*). First match covered: Unibet 2017-04-15, minute-by-minute statistics 2017-06-10, Pinnacle 2018-09-27, Betsson 2022-07-03, Betfair (Sportsbook) 2023-11-03. Months with a gap: Pinnacle 2023-09 to 2023-11 and 2026-07 to 2026-08; Unibet 2026-07 to 2026-08; Betfair (Sportsbook) 2024-11 to 2025-08 and 2026-07 to 2026-08; Betsson 2025-12 and 2026-07 to 2026-08; minute-by-minute statistics 2018-02 to 2019-09 and 2026-07.
 - **Data starts on 2016-08-28**: the first season of each league is partial (its first matchdays are missing); Chile starts with its 2018 season (2018-02-03). Data stops at 2026-09-30: Argentina 2026 Clausura, Bolivia 2026, Brazil 2026, Chile 2026, Colombia 2026 Finalizacion, Ecuador 2026, Mexico 2026/27 Apertura, USA 2026 and Venezuela 2026 Clausura are in progress.
