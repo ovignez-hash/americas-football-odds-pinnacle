@@ -25,7 +25,7 @@ This sample is an exact copy of the full product: same files, same columns, same
 | 11068601 | USA | 2026 | Regular Season | 2026-09-27 | Vancouver Whitecaps - DC United | 3-3 |
 | 13101886 | VEN | 2026 | Regular Season | 2026-09-12 | Deportivo La Guaira - UCV | 0-2 |
 
-Full product (all 30,999 matches): **[→ Get the full dataset on Gumroad](https://sportsdataolivier.gumroad.com/l/diswpw?utm_source=sample_readme&utm_medium=readme&utm_campaign=americas_premium&utm_content=sample_readme)**
+Full product (all 30,999 matches): **[→ Get the full dataset on Gumroad](https://sportsdataolivier.gumroad.com/l/diswpw?utm_source=github&utm_medium=sample_readme&utm_campaign=americas_premium&utm_content=readme)**
 
 Questions: contact@oliviersportsdata.com
 
